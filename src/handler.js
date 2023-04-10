@@ -23,7 +23,7 @@ const addBook = (request, h) => {
     return response;
   }
 
-  if (pageCount < readPage) {
+  if (readPage > pageCount) {
     const response = h.response({
       status: "fail",
       message:
@@ -69,53 +69,14 @@ const addBook = (request, h) => {
 
     return response;
   }
-
-  const response = h.response({
-    status: "fail",
-    message: "Buku gagal ditambahkan",
-  });
-  response.code(500);
-
-  return response;
 };
 
-const getAllBooks = (request, h) => {
-  const { name, reading, finished } = request.query;
-
-  let filteredBooks = books;
-
-  if (name !== undefined) {
-    filteredBooks = filteredBooks.filter((book) =>
-      book.name.toLowerCase().includes(name.toLowerCase())
-    );
-  }
-
-  if (reading !== undefined) {
-    filteredBooks = filteredBooks.filter(
-      (book) => book.reading === !!Number(reading)
-    );
-  }
-
-  if (finished !== undefined) {
-    filteredBooks = filteredBooks.filter(
-      (book) => book.finished === !!Number(finished)
-    );
-  }
-
-  const response = h.response({
-    status: "success",
-    data: {
-      books: filteredBooks.map((book) => ({
-        id: book.id,
-        name: book.name,
-        publisher: book.publisher,
-      })),
-    },
-  });
-  response.code(200);
-
-  return response;
-};
+const getAllBooks = () => ({
+  status: "success",
+  data: {
+    books,
+  },
+});
 
 const getBookById = (request, h) => {
   const { id } = request.params;
@@ -165,7 +126,7 @@ const updateBookById = (request, h) => {
       return response;
     }
 
-    if (pageCount < readPage) {
+    if (readPage > pageCount) {
       const response = h.response({
         status: "fail",
         message:
